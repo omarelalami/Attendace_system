@@ -1,8 +1,9 @@
 class Etudiant:
-    def __init__(self, id_e, nom, filiere_nom):
-        self.id = id
+    def __init__(self, id_e, nom ,prenom,date_naissance):
+        self.id = id_e
         self.nom = nom
-        self.filiere_nom = filiere_nom
+        self.prenom=prenom
+        self.date_naissance=date_naissance
 
 class Presence:
     def __init__(self, id_p, date, heure, id_etudiant, nom, seance):
@@ -24,7 +25,7 @@ class Matiere:
     def __init__(self, id_m, nom_m):
         self.id_m = id_m
         self.nom_m = nom_m
-class
+
 
 
 class Seance:
