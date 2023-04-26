@@ -1,209 +1,111 @@
-import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QDialog, QFormLayout, QLabel, QLineEdit, QFileDialog,QMessageBox
-import mysql.connector
-from PyQt5.QtGui import QPixmap
-import csv
-import customtkinter as ctk
+import tkinter
+import customtkinter
 
-class MainWindow(QWidget):
+DARK_MODE = "dark"
+customtkinter.set_appearance_mode(DARK_MODE)
+customtkinter.set_default_color_theme("dark-blue")
+
+
+class App(customtkinter.CTk):
+
+
     def __init__(self):
         super().__init__()
 
-        # Set up the main window
-        self.setWindowTitle('Face Recognition System')
-        self.setGeometry(300, 400, 1000, 1000)  # Set window dimensions
-        self.setFixedSize(800, 600)  # Fix window dimensions
+        self.title("Change Frames")
+        # remove title bar , page reducer and closing page !!!most have a quit button with app.destroy!!! (this app have a quit button so don't worry about that)
 
-        # Create a vertical layout for the main window
-        layout = QVBoxLayout()
+        # make the app as big as the screen (no mater wich screen you use)
 
-        # Add logo image
-        logo_label = QLabel()
-        pixmap = QPixmap('./JO.PNG')  # Replace 'logo.png' with the path to your logo image
-        logo_label.setPixmap(pixmap.scaledToWidth(800))  # Scale the image to a width of 200 pixels
-        layout.addWidget(logo_label)
+        # root!
+        self.main_container = customtkinter.CTkFrame(self, corner_radius=10)
+        self.main_container.pack(fill=tkinter.BOTH, expand=True, padx=10, pady=10)
 
-        # Create a "Insert Filière" button
-        btn_insert_filiere = QPushButton('Insert Filière', self)
-        btn_insert_filiere.clicked.connect(self.open_insert_filiere_dialog)
-        layout.addWidget(btn_insert_filiere)
+        # left side panel -> for frame selection
+        self.left_side_panel = customtkinter.CTkFrame(self.main_container, width=150, corner_radius=10)
+        self.left_side_panel.pack(side=tkinter.LEFT, fill=tkinter.Y, expand=False, padx=5, pady=5)
 
-        # Create a "Insert student" button
-        btn_insert_student = QPushButton('Insert Student', self)
-        btn_insert_student.clicked.connect(self.open_insert_student_dialog)
-        layout.addWidget(btn_insert_student)
+        self.left_side_panel.grid_columnconfigure(0, weight=1)
+        self.left_side_panel.grid_rowconfigure((0, 1, 2, 3), weight=0)
+        self.left_side_panel.grid_rowconfigure((4, 5), weight=1)
 
-        # Create a "Insert student" button
-        btn_insert_matiere = QPushButton('Insert Matière', self)
-        btn_insert_matiere.clicked.connect(self.open_insert_student_dialog)
-        layout.addWidget(btn_insert_matiere)
+        # self.left_side_panel WIDGET
+        self.logo_label = customtkinter.CTkLabel(self.left_side_panel, text="Attendance System\n",
+                                                 font=customtkinter.CTkFont(size=20, weight="bold"))
+        self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
 
-        # Create a "Insert student" button
-        btn_insert_seance = QPushButton('Insert Seance', self)
-        btn_insert_seance.clicked.connect(self.open_insert_student_dialog)
-        layout.addWidget(btn_insert_seance)
-
-
-
-        # Create a "Lancer la detection" button
-        btn_lancer_detection = QPushButton('Lancer La detection', self)
-        btn_insert_filiere.clicked.connect(self.open_insert_filiere_dialog)
-        layout.addWidget(btn_lancer_detection)
-
-
-        # Set the layout for the main window
-        self.setLayout(layout)
-
-    def open_insert_student_dialog(self):
-        # Open a new window for inserting student information
-        dialog = QDialog(self)
-        dialog.setWindowTitle('Insert Student Information')
-
-         # Create a form layout for the new window
-        form_layout = QFormLayout()
-
-        # Create labels and line edits for student information
-        lbl_id = QLabel('ID:')
-        le_id = QLineEdit()
-        form_layout.addRow(lbl_id, le_id)
-
-        lbl_nom = QLabel('Nom:')
-        le_nom = QLineEdit()
-        form_layout.addRow(lbl_nom, le_nom)
-
-        lbl_filiere_nom = QLabel('Filière Nom:')
-        le_filiere_nom = QLineEdit()
-        form_layout.addRow(lbl_filiere_nom, le_filiere_nom)
-
-        # Create a button for uploading CSV file
-        btn_upload_csv = QPushButton('Upload CSV')
-        btn_upload_csv.clicked.connect(self.upload_csv)
-        form_layout.addRow(btn_upload_csv)
-
-        # Create a button for inserting student information
-        btn_insert = QPushButton('Insert')
-        btn_insert.clicked.connect(lambda: self.insert_student(le_id.text(), le_nom.text(), le_filiere_nom.text()))
-        form_layout.addRow(btn_insert)
-
-        # Set the form layout for the new window
-        dialog.setLayout(form_layout)
-
-        # Show the new window
-        dialog.exec_()
-
-    def open_insert_filiere_dialog(self):
-        # Open a new window for inserting filière information
-        dialog = QDialog(self)
-        dialog.setWindowTitle('Insert Filière Information')
-
-        # Create a form layout for the new window
-        form_layout = QFormLayout()
-
-        # Create labels and line edits for filière information
-        lbl_id = QLabel('ID:')
-        le_id = QLineEdit()
-        form_layout.addRow(lbl_id, le_id)
-
-        lbl_nom = QLabel('Nom:')
-        le_nom = QLineEdit()
-        form_layout.addRow(lbl_nom, le_nom)
-
-        lbl_id_etudiant = QLabel('ID Étudiant:')
-        le_id_etudiant = QLineEdit()
-        form_layout.addRow(lbl_id_etudiant, le_id_etudiant)
-
-        lbl_id_matiere = QLabel('ID Matière:')
-        le_id_matiere = QLineEdit()
-        form_layout.addRow(lbl_id_matiere, le_id_matiere)
-
-        # Create a button for inserting filière information
-        btn_insert = QPushButton('Insert')
-        btn_insert.clicked.connect(
-            lambda: self.insert_filiere(le_id.text(), le_nom.text(), le_id_etudiant.text(), le_id_matiere.text()))
-        form_layout.addRow(btn_insert)
-
-        # Set the form layout for the new window
-        dialog.setLayout(form_layout)
-
-        # Show the new window
-        dialog.exec_()
-
-    def upload_csv(self):
-        # Open a file dialog to choose a CSV file
-        file_path, _ = QFileDialog.getOpenFileName(self, 'Open CSV File', '', 'CSV Files (*.csv)')
-
-        # Read the CSV file and insert students into the database
-        if file_path:
-            with open(file_path, 'r') as csvfile:
-                reader = csv.reader(csvfile)
-                next(reader)  # Skip the header row
-                for row in reader:
-                    id = row[0]
-                    nom = row[1]
-                    filiere_nom = row[2]
-                    self.insert_student(id, nom, filiere_nom)
-
-    def insert_student(self, id, nom, filiere_nom):
-        # Insert student information into the database
-        conn = mysql.connector.connect(
-            host='localhost',
-            user='root',
-            password='',
-            database='si_presence'
-        )
-        cursor = conn.cursor()
-
-        # Insert the student into the database
-        query = "INSERT INTO etudiant (id_e, nom, filiere_nom) VALUES (%s, %s, %s)"
-        values = (id, nom, filiere_nom)
-        cursor.execute(query, values)
-
-        # Commit the transaction and close the connection
-        conn.commit()
-        cursor.close()
-        conn.close()
-
-        # Show a message box indicating successful insertion
-        QMessageBox.information(self, 'Success', 'Student information inserted successfully!')
-
-    def insert_filiere(self, id, nom, id_etudiant, id_m):
-        # Insert filière information into the database
-        conn = mysql.connector.connect(
-            host='localhost',
-            user='root',
-            password='',
-            database='si_presence'
-        )
-        cursor = conn.cursor()
-
-        # Insert the filière into the database
-        query = "INSERT INTO filiere (id_f, nom, id_etudiant, id_m) VALUES (%s, %s, %s, %s)"
-        values = (id, nom, id_etudiant, id_m)
-        cursor.execute(query, values)
-
-        # Commit the transaction and close the connection
-        conn.commit()
-        cursor.close()
-        conn.close()
-
-        # Show a message box indicating successful insertion
-        QMessageBox.information(self, 'Success', 'Filière information inserted successfully!')
-
-
-# Create the PyQt application
-app = QApplication(sys.argv)
-
-# Create the main window
-# window = MainWindow()
-# window.show()
-#
-# # Run the PyQt event loop
-# sys.exit(app.exec_())
-from guiUser import App
-
-app = App()
-app.mainloop()
+        self.scaling_label = customtkinter.CTkLabel(self.left_side_panel, text="UI Scaling:", anchor="w")
+        self.scaling_label.grid(row=7, column=0, padx=20, pady=(10, 0))
 
 
 
 
+        self.bt_Quit = customtkinter.CTkButton(self.left_side_panel, text="Quit", fg_color='#EA0000', hover_color='#B20000',
+                                               command=self.close_window)
+        self.bt_Quit.grid(row=9, column=0, padx=20, pady=10)
+
+
+
+
+        # button to select correct frame IN self.left_side_panel WIDGET
+        self.bt_dashboard = customtkinter.CTkButton(self.left_side_panel, text="Dashboard", command=self.dash)
+        self.bt_dashboard.grid(row=1, column=0, padx=20, pady=10)
+
+        self.bt_statement = customtkinter.CTkButton(self.left_side_panel, text="Statement", command=self.statement)
+        self.bt_statement.grid(row=2, column=0, padx=20, pady=10)
+
+        self.bt_categories = customtkinter.CTkButton(self.left_side_panel, text="Manage Categories",
+                                                     command=self.categories)
+        self.bt_categories.grid(row=3, column=0, padx=20, pady=10)
+
+        # right side panel -> have self.right_dashboard inside it
+        self.right_side_panel = customtkinter.CTkFrame(self.main_container, corner_radius=10, fg_color="#000811")
+        self.right_side_panel.pack(side=tkinter.LEFT, fill=tkinter.BOTH, expand=True, padx=5, pady=5)
+
+        self.right_dashboard = customtkinter.CTkFrame(self.main_container, corner_radius=10, fg_color="#000811")
+        self.right_dashboard.pack(in_=self.right_side_panel, side=tkinter.TOP, fill=tkinter.BOTH, expand=True, padx=0,
+                                  pady=0)
+
+
+    #  self.right_dashboard   ----> dashboard widget
+    def dash(self):
+        self.clear_frame()
+        self.bt_from_frame1 = customtkinter.CTkButton(self.right_dashboard, text="dash", command=lambda: print("test dash"))
+        self.bt_from_frame1.grid(row=0, column=0, padx=20, pady=(10, 0))
+        self.bt_from_frame2 = customtkinter.CTkButton(self.right_dashboard, text="dash 1",
+                                                      command=lambda: print("test dash 1"))
+        self.bt_from_frame2.grid(row=1, column=0, padx=20, pady=(10, 0))
+
+
+    #  self.right_dashboard   ----> statement widget
+    def statement(self):
+        self.clear_frame()
+        self.bt_from_frame3 = customtkinter.CTkButton(self.right_dashboard, text="statement",
+                                                      command=lambda: print("test statement"))
+        self.bt_from_frame3.grid(row=0, column=0, padx=20, pady=(10, 0))
+
+
+    #  self.right_dashboard   ----> categories widget
+    def categories(self):
+        self.clear_frame()
+        self.bt_from_frame4 = customtkinter.CTkButton(self.right_dashboard, text="categories",
+                                                      command=lambda: print("test cats"))
+        self.bt_from_frame4.grid(row=0, column=0, padx=20, pady=(10, 0))
+
+
+
+
+
+    # close the entire window
+    def close_window(self):
+        App.destroy(self)
+
+
+    # CLEAR ALL THE WIDGET FROM self.right_dashboard(frame) BEFORE loading the widget of the concerned page
+    def clear_frame(self):
+        for widget in self.right_dashboard.winfo_children():
+            widget.destroy()
+
+
+a = App()
+a.mainloop()
