@@ -63,11 +63,16 @@ class HomeGUI(customtkinter.CTk):
                                                      command=self.categories)
         self.bt_presence.grid(row=5, column=0, padx=20, pady=10)
 
+        self.bt_lancer = customtkinter.CTkButton(self.left_side_panel, text="Lancer la detection",
+                                                 command=self.ok,width=170,height=50,border_width=1,fg_color="#515A5A",hover_color='#424949')
+
+        self.bt_lancer.grid(row=8, column=0, padx=20, pady=10)
+
         # right side panel -> have self.right_dashboard inside it
         self.right_side_panel = customtkinter.CTkFrame(self.main_container, corner_radius=10, fg_color="#000811")
         self.right_side_panel.pack(side=tkinter.LEFT, fill=tkinter.BOTH, expand=True, padx=5, pady=5)
 
-        self.right_dashboard = customtkinter.CTkFrame(self.main_container, corner_radius=10, fg_color="#000811")
+        self.right_dashboard = customtkinter.CTkFrame(self.main_container, corner_radius=10, fg_color="#23242A")
         self.right_dashboard.pack(in_=self.right_side_panel, side=tkinter.TOP, fill=tkinter.BOTH, expand=True, padx=0,
                                   pady=0)
 
