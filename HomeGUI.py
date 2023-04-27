@@ -4,7 +4,8 @@ import customtkinter
 DARK_MODE = "dark"
 customtkinter.set_appearance_mode(DARK_MODE)
 customtkinter.set_default_color_theme("dark-blue")
-import EdudiantGUI as ts
+import EdudiantGUI as et
+import InscriptionGUI as ins
 class HomeGUI(customtkinter.CTk):
 
 
@@ -37,16 +38,16 @@ class HomeGUI(customtkinter.CTk):
 
         self.bt_Quit = customtkinter.CTkButton(self.left_side_panel, text="Quit", fg_color='#EA0000', hover_color='#B20000',command=self.close_window)
         self.bt_Quit.grid(row=9, column=0, padx=20, pady=10)
-
+ 
 
 
 
         # button to select correct frame IN self.left_side_panel WIDGET
-        self.bt_etudiant = customtkinter.CTkButton(self.left_side_panel, text="Ajouter Etudiant", command=self.ok)
+        self.bt_etudiant = customtkinter.CTkButton(self.left_side_panel, text="Ajouter Etudiant", command=self.GoEtudiant)
 
         self.bt_etudiant.grid(row=1, column=0, padx=20, pady=10)
 
-        self.bt_inscription = customtkinter.CTkButton(self.left_side_panel, text="Inscription", command=self.statement)
+        self.bt_inscription = customtkinter.CTkButton(self.left_side_panel, text="Inscription", command=self.GoInscription)
         self.bt_inscription.grid(row=2, column=0, padx=20, pady=10)
 
         self.bt_matiere = customtkinter.CTkButton(self.left_side_panel, text="Ajouter Matière",
@@ -64,7 +65,7 @@ class HomeGUI(customtkinter.CTk):
         self.bt_presence.grid(row=5, column=0, padx=20, pady=10)
 
         self.bt_lancer = customtkinter.CTkButton(self.left_side_panel, text="Lancer la detection",
-                                                 command=self.ok,width=170,height=50,border_width=1,fg_color="#515A5A",hover_color='#424949')
+                                                 command=self.GoEtudiant,width=170,height=50,border_width=1,fg_color="#515A5A",hover_color='#424949')
 
         self.bt_lancer.grid(row=8, column=0, padx=20, pady=10)
 
@@ -78,13 +79,17 @@ class HomeGUI(customtkinter.CTk):
 
 
     #  self.right_dashboard   ----> dashboard widget
-    def ok(self):
+    def GoEtudiant(self):
         self.clear_frame()
-        ts.ThemeEtudiant(self.right_dashboard)
+        et.EtudiantGui(self.right_dashboard)
+
+    def GoInscription(self):
+        self.clear_frame()
+        ins.InscriptionGui(self.right_dashboard)
 
     # close the entire window
     def close_window(self):
-        App.destroy(self)
+        HomeGUI.destroy(self)
 
 
     # CLEAR ALL THE WIDGET FROM self.right_dashboard(frame) BEFORE loading the widget of the concerned page
