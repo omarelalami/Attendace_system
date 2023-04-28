@@ -6,6 +6,8 @@ customtkinter.set_appearance_mode(DARK_MODE)
 customtkinter.set_default_color_theme("dark-blue")
 import EdudiantGUI as et
 import InscriptionGUI as ins
+import FiliereGUI as fil
+import SeanceGui as sea
 class HomeGUI(customtkinter.CTk):
 
 
@@ -55,14 +57,18 @@ class HomeGUI(customtkinter.CTk):
         self.bt_matiere.grid(row=3, column=0, padx=20, pady=10)
 
 
+
         self.bt_filiere = customtkinter.CTkButton(self.left_side_panel, text="Ajouter Filière",
-                                                     command=self.categories)
+                                                     command=self.GoFiliere)
         self.bt_filiere.grid(row=4, column=0, padx=20, pady=10)
 
+        self.bt_seance = customtkinter.CTkButton (self.left_side_panel, text="Ajouter Séance",
+                                                  command=self.GoSeance)
+        self.bt_seance.grid (row=5, column=0, padx=20, pady=10)
 
         self.bt_presence = customtkinter.CTkButton(self.left_side_panel, text="Liste De Presence",
                                                      command=self.categories)
-        self.bt_presence.grid(row=5, column=0, padx=20, pady=10)
+        self.bt_presence.grid(row=6, column=0, padx=20, pady=10)
 
         self.bt_lancer = customtkinter.CTkButton(self.left_side_panel, text="Lancer la detection",
                                                  command=self.GoEtudiant,width=170,height=50,border_width=1,fg_color="#515A5A",hover_color='#424949')
@@ -87,6 +93,13 @@ class HomeGUI(customtkinter.CTk):
         self.clear_frame()
         ins.InscriptionGui(self.right_dashboard)
 
+    def GoFiliere(self):
+        self.clear_frame()
+        fil.FiliereGui(self.right_dashboard)
+
+    def GoSeance(self):
+        self.clear_frame()
+        sea.SeanceGui(self.right_dashboard)
     # close the entire window
     def close_window(self):
         HomeGUI.destroy(self)
