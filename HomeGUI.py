@@ -8,6 +8,7 @@ import EdudiantGUI as et
 import InscriptionGUI as ins
 import FiliereGUI as fil
 import SeanceGui as sea
+import MatiereGUI as mat
 class HomeGUI(customtkinter.CTk):
 
 
@@ -53,7 +54,7 @@ class HomeGUI(customtkinter.CTk):
         self.bt_inscription.grid(row=2, column=0, padx=20, pady=10)
 
         self.bt_matiere = customtkinter.CTkButton(self.left_side_panel, text="Ajouter Matière",
-                                                     command=self.categories)
+                                                     command=self.GoMatiere)
         self.bt_matiere.grid(row=3, column=0, padx=20, pady=10)
 
 
@@ -100,9 +101,15 @@ class HomeGUI(customtkinter.CTk):
     def GoSeance(self):
         self.clear_frame()
         sea.SeanceGui(self.right_dashboard)
+
+    def GoMatiere(self):
+        self.clear_frame()
+        mat.MatiereGui(self.right_dashboard)
     # close the entire window
     def close_window(self):
         HomeGUI.destroy(self)
+
+
 
 
     # CLEAR ALL THE WIDGET FROM self.right_dashboard(frame) BEFORE loading the widget of the concerned page
