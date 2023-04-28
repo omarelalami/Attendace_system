@@ -61,6 +61,11 @@ class MySQLDatabase:
         self.cursor.execute(query)
         self.connection.commit()
 
+    def insert_inscription (self, inscription):
+        query = f"INSERT INTO INSCRIPTION VALUES ('{inscription.id_inscription}', '{inscription.annee_universitaires}', '{inscription.niveau}', '{inscription.diplome}', '{inscription.id_fil}', '{inscription.id_etu}')"
+        self.cursor.execute (query)
+        self.connection.commit ()
+
     def get_all_etudiants(self):
         query = "SELECT * FROM ETUDIANT"
         self.cursor.execute(query)

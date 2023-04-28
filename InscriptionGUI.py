@@ -3,7 +3,7 @@ import csv
 from modelEcole import Etudiant,MySQLDatabase
 from PyQt5 import Qt
 from CTkMessagebox import CTkMessagebox
-
+from modelEcole import *
 
 
 
@@ -46,20 +46,19 @@ class InscriptionGui:
         self.etuEntry = ctk.CTkEntry(right_dashboard, placeholder_text="E00001")
         self.etuEntry.grid(row=5, column=1, columnspan=3, padx=20, pady=20, sticky="ew")
 
-        self.bt_inscription = ctk.CTkButton(right_dashboard, text="Ajouter Inscription", command=self.insert_etudiant)
+        self.bt_inscription = ctk.CTkButton(right_dashboard, text="Ajouter Inscription", command=self.insert_inscription)
         self.bt_inscription.grid(row=6, column=4, padx=20, pady=10)
 
         self.bt_upload = ctk.CTkButton(right_dashboard, text="Upload Fichier CSV", command=self.upload_csv)
         self.bt_upload.grid(row=6, column=3, padx=20, pady=10)
 
-
-
-
-    def insert_etudiant (self):
+    def insert_inscription (self):
         try:
             db = MySQLDatabase ('localhost', 'root', '', 'si_presence')
-            etudiant = Etudiant (self.idEntry.get(),self.prenomEntry.get(),self.nomEntry.get(),self.NaissanceEntry.get())
-            db.insert_etudiant (etudiant)
+            inscription = Inscription (self.idEntry.get (), self.anneeEntry.get (),
+                                       self.niveauEntry.get (), self.diplomeEntry.get (), self.filEntry.get (),
+                                       self.etuEntry.get ())
+            db.insert_inscription (inscription)
             db.close_connection ()
             CTkMessagebox (title="Good", message="Operation effectuer avec succes", icon="check", option_1="OK")
         except Exception:
