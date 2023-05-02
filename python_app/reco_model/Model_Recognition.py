@@ -13,7 +13,7 @@ class AttendanceSystem:
         self.classNames = []
         self.encoded_face_train = []
         self.path = 'student_images'
-        self.attendance_file = 'Attendance.csv'
+        self.attendance_file = 'Attendance_marked/Attendance.csv'
 
     def load_images(self):
         mylist = os.listdir(self.path)

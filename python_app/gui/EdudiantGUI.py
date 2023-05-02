@@ -4,7 +4,7 @@ import customtkinter as ctk
 from CTkMessagebox import CTkMessagebox
 from PyQt5 import Qt
 
-from modelEcole import Etudiant, MySQLDatabase
+from model_ecole.modelEcole import Etudiant, MySQLDatabase
 
 
 class EtudiantGui:

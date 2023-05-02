@@ -6,12 +6,12 @@ import customtkinter
 DARK_MODE = "dark"
 customtkinter.set_appearance_mode(DARK_MODE)
 customtkinter.set_default_color_theme("dark-blue")
-import EdudiantGUI as et
-import InscriptionGUI as ins
-import FiliereGUI as fil
-import SeanceGui as sea
-import MatiereGUI as mat
-from Model_Recognition import AttendanceSystem
+import gui.EdudiantGUI as et
+import gui.InscriptionGUI as ins
+import gui.FiliereGUI as fil
+import gui.SeanceGui as sea
+import gui.MatiereGUI as mat
+from reco_model.Model_Recognition import AttendanceSystem
 
 
 class HomeGUI(customtkinter.CTk):

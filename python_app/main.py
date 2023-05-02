@@ -1,4 +1,4 @@
-import HomeGUI as app
+import gui.HomeGUI as app
 a = app.HomeGUI()
 a.mainloop()
 
