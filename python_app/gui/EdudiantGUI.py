@@ -57,13 +57,13 @@ class EtudiantGui:
 
     def insert_etudiant (self):
 
-        db = MySQLDatabase ('localhost', 'root', '', 'si_presence')
+
         try:
             # Check if all input fields are non-empty
             if not all (
                     (self.idEntry.get (), self.prenomEntry.get (), self.nomEntry.get (), self.NaissanceEntry.get ())):
                 raise ValueError ("Tous les champs doivent être remplis.")
-
+            db = MySQLDatabase('localhost', 'root', '', 'si_presence')
             # Open database connection and insert new student
 
             etudiant = Etudiant (self.idEntry.get (), self.prenomEntry.get (), self.nomEntry.get (),
@@ -85,7 +85,7 @@ class EtudiantGui:
         """
         Displays a file dialog to choose a CSV file and inserts the data into the database.
         """
-        db = MySQLDatabase ('localhost', 'root', '', 'si_presence')
+        db=None
         try:
             app = Qt.QApplication ([])
             file_path, _ = Qt.QFileDialog.getOpenFileName (None, 'Open CSV File', '', 'CSV Files (*.csv)')
@@ -93,7 +93,7 @@ class EtudiantGui:
             if not file_path:
                 raise ValueError ('No file selected.')
 
-
+            db = MySQLDatabase('localhost', 'root', '', 'si_presence')
 
 
             with open (file_path, 'r') as csvfile:

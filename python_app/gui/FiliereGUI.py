@@ -55,14 +55,15 @@ class FiliereGui:
         """
         Displays a file dialog to choose a CSV file and inserts the data into the database.
         """
-        db = MySQLDatabase ('localhost', 'root', '', 'si_presence')
+        db=None
+
         try:
             app = Qt.QApplication([])
             file_path, _ = Qt.QFileDialog.getOpenFileName(None, 'Open CSV File', '', 'CSV Files (*.csv)')
 
             if not file_path:
                 raise ValueError('No file selected.')
-
+            db = MySQLDatabase('localhost', 'root', '', 'si_presence')
             with open(file_path, 'r') as csvfile:
                 reader = csv.reader(csvfile)
                 next(reader)  # Skip the header row

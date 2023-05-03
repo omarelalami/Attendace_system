@@ -5,7 +5,8 @@ import customtkinter
 import cv2
 import face_recognition
 import numpy as np
-
+import threading
+import winsound
 
 class AttendanceSystem:
     def __init__(self):
@@ -34,17 +35,15 @@ class AttendanceSystem:
                 date = now.strftime('%d-%B-%Y')
                 f.write(f'n{name}, {time}, {date}\n')
 
-    def play_sound(self,success):
-        # if success:
-        #     playsound('success.mp3')
-        # else:
-        #     print('No match found.')
-        pass
-
-
+    def play_sound(self, wait=False):
+        success_sound = r'C:\Attendance_system\Attendance_system\python_app\reco_model\success.wav'  # change to the path of your desired WAV sound file
+        flags = winsound.SND_FILENAME
+        if wait:
+            flags = flags & ~winsound.SND_ASYNC
+            winsound.PlaySound(success_sound,winsound.SND_FILENAME)
 
     def start_attendance_system(self,right_dashboard):
-
+        sound_playing = False
         progressbar = customtkinter.CTkProgressBar(master=right_dashboard)
         progressbar.configure(mode="indeterminate",width=290,height=20)
         x = (right_dashboard.winfo_width() - progressbar.winfo_width()) / 2
@@ -60,6 +59,7 @@ class AttendanceSystem:
         while True:
             success, img = cap.read()
             imgS = cv2.resize(img, (0, 0), None, 0.25, 0.25)
+
             imgS = cv2.cvtColor(imgS, cv2.COLOR_BGR2RGB)
             faces_in_frame = face_recognition.face_locations(imgS)
             encoded_faces = face_recognition.face_encodings(imgS, faces_in_frame)
@@ -76,7 +76,10 @@ class AttendanceSystem:
                     cv2.rectangle(img, (x1, y2 - 35), (x2, y2), (0, 255, 0), cv2.FILLED)
                     cv2.putText(img, name, (x1 + 6, y2 - 5), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 255, 255), 2)
                     self.mark_attendance(name)
-                    self.play_sound(True)
+                    if not sound_playing:
+                        sound_playing = True
+                        self.play_sound(wait=True)
+                        sound_playing = False
 
             cv2.imshow('webcam', img)
             if cv2.waitKey(1) & 0xFF == ord('q'):

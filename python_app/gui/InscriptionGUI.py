@@ -82,6 +82,7 @@ class InscriptionGui:
         """
         Displays a file dialog to choose a CSV file and inserts the data into the database.
         """
+        db=None
         try:
             app = Qt.QApplication ([])
             file_path, _ = Qt.QFileDialog.getOpenFileName (None, 'Open CSV File', '', 'CSV Files (*.csv)')
