@@ -11,6 +11,7 @@ import gui.InscriptionGUI as ins
 import gui.FiliereGUI as fil
 import gui.SeanceGui as sea
 import gui.MatiereGUI as mat
+import gui.PresenceGUI as pre
 from reco_model.Model_Recognition import AttendanceSystem
 
 
@@ -74,7 +75,7 @@ class HomeGUI(customtkinter.CTk):
         self.bt_seance.grid (row=5, column=0, padx=20, pady=10)
 
         self.bt_presence = customtkinter.CTkButton(self.left_side_panel, text="Liste De Presence",
-                                                     command=self.categories)
+                                                     command=self.GoPresence())
         self.bt_presence.grid(row=6, column=0, padx=20, pady=10)
 
         self.bt_lancer = customtkinter.CTkButton(self.left_side_panel, text="Lancer la detection",
@@ -112,6 +113,9 @@ class HomeGUI(customtkinter.CTk):
     def GoMatiere(self):
         self.clear_frame()
         mat.MatiereGui(self.right_dashboard)
+    def GoPresence(self):
+        self.clear_frame()
+        pre.PresenceGUI(self.right_dashboard)
     # close the entire window
     def close_window(self):
         HomeGUI.destroy(self)
