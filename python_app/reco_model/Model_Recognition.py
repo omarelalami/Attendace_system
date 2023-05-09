@@ -67,7 +67,7 @@ class AttendanceSystem:
                 matches = face_recognition.compare_faces(self.encoded_face_train, encode_face)
                 faceDist = face_recognition.face_distance(self.encoded_face_train, encode_face)
                 matchIndex = np.argmin(faceDist)
-                if faceDist [matchIndex] <0.7:
+                if faceDist [matchIndex] <0.48:
                     name = self.classNames[matchIndex].upper().lower()
                     y1, x2, y2, x1 = faceloc
                     # since we scaled down by 4 times

@@ -119,6 +119,18 @@ class MySQLDatabase:
         query = f"INSERT INTO FILIERE VALUES ('{filiere.id_filiere}', '{filiere.nom}')"
         self.cursor.execute(query)
         self.connection.commit()
+
+    def getAllFiliere(self):
+        query = "SELECT NOM FROM FILIERE"
+        self.cursor.execute(query)
+        result = self.cursor.fetchall()
+
+        names = []
+        for row in result:
+            name = row [0]
+            names.append(name)
+        return names
+
     def close_connection(self):
         self.connection.close()
 

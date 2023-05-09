@@ -20,8 +20,9 @@ class HomeGUI(customtkinter.CTk):
 
     def __init__(self):
         super().__init__()
-        self.geometry("1200x700")
+        self.geometry("1400x900")
         self.title("Change Frames")
+
 
         # remove title bar , page reducer and closing page !!!most have a quit button with app.destroy!!! (this app have a quit button so don't worry about that)
 
@@ -30,6 +31,7 @@ class HomeGUI(customtkinter.CTk):
         # root!
         self.main_container = customtkinter.CTkFrame(self, corner_radius=10)
         self.main_container.pack(fill=tkinter.BOTH, expand=True, padx=10, pady=10)
+
 
         # left side panel -> for frame selection
         self.left_side_panel = customtkinter.CTkFrame(self.main_container, width=150, corner_radius=10)
@@ -48,7 +50,7 @@ class HomeGUI(customtkinter.CTk):
 
         self.bt_Quit = customtkinter.CTkButton(self.left_side_panel, text="Quit", fg_color='#EA0000', hover_color='#B20000',command=self.close_window)
         self.bt_Quit.grid(row=9, column=0, padx=20, pady=10)
- 
+
 
 
 
@@ -75,7 +77,7 @@ class HomeGUI(customtkinter.CTk):
         self.bt_seance.grid (row=5, column=0, padx=20, pady=10)
 
         self.bt_presence = customtkinter.CTkButton(self.left_side_panel, text="Liste De Presence",
-                                                     command=self.GoPresence())
+                                                     command=self.GoPresence)
         self.bt_presence.grid(row=6, column=0, padx=20, pady=10)
 
         self.bt_lancer = customtkinter.CTkButton(self.left_side_panel, text="Lancer la detection",
@@ -116,6 +118,7 @@ class HomeGUI(customtkinter.CTk):
     def GoPresence(self):
         self.clear_frame()
         pre.PresenceGUI(self.right_dashboard)
+
     # close the entire window
     def close_window(self):
         HomeGUI.destroy(self)
