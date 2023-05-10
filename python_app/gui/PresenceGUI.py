@@ -152,11 +152,23 @@ class PresenceGUI:
     def export_data_to_csv(self):
         db = MySQLDatabase('localhost', 'root', '', 'si_presence')
         result=db.get_presence_data(str(self.combobox2.get()),str(self.combobox1.get()),str(self.combobox3.get()))
+        result1=[]
+        for i in result:
+
+            id = i[0]
+            nom = i[1]
+            prenom = i[2]
+            filiere=self.combobox1.get()
+            matiere=self.combobox2.get()
+            statut=i[3]
+            result1.append((id, nom, prenom, filiere, matiere, statut))
+        print(result1)
         # Convert result set to a pandas DataFrame
-        df = pd.DataFrame(result)
+        df = pd.DataFrame(result1)
 
         # Export data to CSV file
-        df.to_csv('presence', index=False)
+        df.to_excel('presence.xlsx', index=False, header=['id_etudiant', 'nom', 'prenom', 'filiere', 'matiere', 'statut'])
+
 
 
 
