@@ -131,6 +131,48 @@ class MySQLDatabase:
             names.append(name)
         return names
 
+    def getMatiere(self, filiere):
+        query = "SELECT M.NOM_MATIERE FROM FILIERE F, Matiere M, GERER G WHERE F.NOM=%s AND F.id_filiere=G.ID_FI AND G.id_ma=M.id_matiere"
+        self.cursor.execute(query, (filiere,))
+        result = self.cursor.fetchall()
+
+        names = []
+        for row in result:
+            name = row [0]
+            names.append(name)
+
+        return names
+
+    def getSeance(self, matiere, filiere):
+        query = "SELECT S.DATE_SEANCE FROM FILIERE F, Matiere M, GERER G, SEANCE S WHERE M.nom_matiere=%s AND F.NOM=%s AND F.id_filiere=G.ID_FI AND G.id_ma=M.id_matiere AND S.id_seance=G.id_se"
+        self.cursor.execute(query, (matiere, filiere))
+        result = self.cursor.fetchall()
+
+        seance_dates = []
+        for row in result:
+            seance_date = row [0]
+            seance_dates.append(seance_date)
+
+        return seance_dates
+
+    def get_presence_data(self, matiere, filiere,seance):
+        query = "SELECT E.Id_etudiant, E.NOM, E.PRENOM, P.status FROM FILIERE F, Matiere M, GERER G, SEANCE S, PRESENCE P, ETUDIANT E,INSCRIPTION I WHERE M.nom_matiere=%s AND F.NOM=%s AND F.id_filiere=G.ID_FI \
+            AND G.id_ma=M.id_matiere AND S.id_seance=G.id_se AND F.id_filiere=I.ID_FIL AND P.id_etu=E.ID_ETUDIANT AND S.DATE_SEANCE=%s"
+        self.cursor.execute(query, (matiere, filiere,seance))
+        result = self.cursor.fetchall()
+
+        presence_data = []
+        for row in result:
+            id_etudiant = row [0]
+            nom = row [1]
+            prenom = row [2]
+            statut = row [3]
+            presence_data.append((id_etudiant, nom, prenom, statut))
+
+        return presence_data
+
+
+
     def close_connection(self):
         self.connection.close()
 

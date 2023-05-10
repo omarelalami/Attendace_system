@@ -5,21 +5,19 @@ a.mainloop()
 
 
 
-
-# import asyncio
-# import aiofiles
-# from playsound import playsound
+# import tkinter as tk
+# from tkinter import ttk
 #
-# async def play_sound_async(success):
-#     if success:
-#         await asyncio.sleep(9)
-#         await asyncio.gather(
-#             asyncio.to_thread(playsound, 'success.mp3')
+# class MyGUI:
+#     def __init__(self, parent):
+#         self.parent = parent
 #
-#         )
-# asyncio.run(play_sound_async(True))
-
-
-
-
-
+#         self.combobox1.pack()
+#         self.combobox1.bind("<<ComboboxSelected>>", self.Myfunction)
+#
+#     def Myfunction(self, event):
+#         print("Combobox value changed")
+#
+# root = tk.Tk()
+# my_gui = MyGUI(root)
+# root.mainloop()

@@ -22,21 +22,21 @@ class PresenceGUI:
         self.idLabel = customtkinter.CTkLabel(right_dashboard, text="ID Filiere")
         self.idLabel.place(x=250, y=100)
 
+
         self.combobox2 = customtkinter.CTkComboBox(master=right_dashboard,
-                                              values=["option 1", "option 2"],state='disabled')
+                                              values=["option 1", "option 2"],state='disabled',command=self.ForSeance)
         self.combobox2.place(x=315, y=100)
 
         self.idLabel = customtkinter.CTkLabel(right_dashboard, text="ID Filiere")
         self.idLabel.place(x=475, y=100)
 
-        self.combobox3 = customtkinter.CTkComboBox(master=right_dashboard,
-                                              values=["option 1", "option 2"])
+        self.combobox3 = customtkinter.CTkComboBox(master=right_dashboard,state='disabled')
         self.combobox3.place(x=550, y=100)
 
 
 
 
-        self.bt_upload = customtkinter.CTkButton(right_dashboard, text="Go", command=self.getFiliere)
+        self.bt_upload = customtkinter.CTkButton(right_dashboard, text="Go", command=self.GoResult)
         self.bt_upload.place(x=710, y=100)
 
         self.bt_upload = customtkinter.CTkButton(right_dashboard, text="Générer un fichier", command=self.getFiliere)
@@ -76,41 +76,29 @@ class PresenceGUI:
         table_frame.grid(row=0, column=0, sticky='nsew', padx=10, pady=190)
 
         # create the table
-        table = ttk.Treeview(master=table_frame, columns=columns, height=30, selectmode='browse', show='headings')
-        table.column("#1", anchor="c", minwidth=50, width=170)
-        table.column("#2", anchor="c", minwidth=220, width=170)
-        table.column("#3", anchor="c", minwidth=120, width=170)
-        table.column("#4", anchor="c", minwidth=120, width=170)
-        table.column("#5", anchor="c", minwidth=120, width=170)
-        table.column("#6", anchor="c", minwidth=120, width=170)
+        self.table = ttk.Treeview(master=table_frame, columns=columns, height=30, selectmode='browse', show='headings')
+        self.table.column("#1", anchor="c", minwidth=50, width=170)
+        self.table.column("#2", anchor="c", minwidth=220, width=170)
+        self.table.column("#3", anchor="c", minwidth=120, width=170)
+        self.table.column("#4", anchor="c", minwidth=120, width=170)
+        self.table.column("#5", anchor="c", minwidth=120, width=170)
+        self.table.column("#6", anchor="c", minwidth=120, width=170)
 
-        table.heading('id', text='id')
-        table.heading('Nom', text='Nom')
-        table.heading('Prenom', text='Prenom')
-        table.heading('Filière', text='Filière')
-        table.heading('Matière', text='Matière')
-        table.heading('Statut', text='Statut')
+        self.table.heading('id', text='id')
+        self.table.heading('Nom', text='Nom')
+        self.table.heading('Prenom', text='Prenom')
+        self.table.heading('Filière', text='Filière')
+        self.table.heading('Matière', text='Matière')
+        self.table.heading('Statut', text='Statut')
 
-        table.grid(row=0, column=0, sticky='nsew')
+        self.table.grid(row=0, column=0, sticky='nsew')
 
         # create a vertical scrollbar for the table
-        ctk_textbox_scrollbar = customtkinter.CTkScrollbar(table_frame, command=table.yview)
+        ctk_textbox_scrollbar = customtkinter.CTkScrollbar(table_frame, command=self.table.yview)
         ctk_textbox_scrollbar.grid(row=0, column=1, sticky="ns")
 
         # configure the table to use the scrollbar
-        table.configure(yscrollcommand=ctk_textbox_scrollbar.set)
-
-        for i in range(100):
-            id = i + 1
-            item = f"Item {id}"
-            date_added = "2022-05-07"
-            date_of_manufacture = "2022-01-01"
-            # insert a new item at index 0 under the root item
-            table.insert("", 0, values=(id, item, date_added, date_of_manufacture))
-
-        # bind the table
-        table.bind('<Motion>', 'break')
-        self.ForMatiere()
+        self.table.configure(yscrollcommand=ctk_textbox_scrollbar.set)
 
     def getFiliere (self):
 
@@ -119,14 +107,43 @@ class PresenceGUI:
         return listFiliere
 
 
-    def ForMatiere(self):
-        self.combobox2.configure(state='disabled')
-        lis=self.getFiliere()
+    def ForMatiere(self,event):
+        self.combobox1.configure(state='disabled')
+        db = MySQLDatabase('localhost', 'root', '', 'si_presence')
+        lis=db.getMatiere(str(self.combobox1.get()))
         self.combobox2.configure(state='normal',values=lis)
 
 
 
+    def ForSeance(self,event):
+        self.combobox3.configure(state='normal')
+        self.combobox2.configure(state='disabled')
+        db = MySQLDatabase('localhost', 'root', '', 'si_presence')
+
+        lis=db.getSeance(str(self.combobox2.get()),str(self.combobox1.get()))
+
+
+        self.combobox3.configure(values=lis)
 
 
 
+    def GoResult(self):
+        db = MySQLDatabase('localhost', 'root', '', 'si_presence')
+        result=db.get_presence_data(str(self.combobox2.get()),str(self.combobox1.get()),str(self.combobox3.get()))
+        for i in result:
+
+            id = i[0]
+            nom = i[1]
+            prenom = i[2]
+            filiere=self.combobox1.get()
+            matiere=self.combobox2.get()
+            statut=i[3]
+
+            # insert a new item at index 0 under the root item
+            self.table.insert("", 0, values=(id, nom, prenom, filiere,matiere,statut))
+
+        # bind the table
+        self.table.bind('<Motion>', 'break')
+
+        print(result)
 
