@@ -1,4 +1,5 @@
 import mysql.connector
+
 class Etudiant:
     def __init__(self, id_etudiant, nom, prenom, date_naissance):
         self.id_etudiant = id_etudiant
@@ -156,8 +157,10 @@ class MySQLDatabase:
         return seance_dates
 
     def get_presence_data(self, matiere, filiere,seance):
-        query = "SELECT E.Id_etudiant, E.NOM, E.PRENOM, P.status FROM FILIERE F, Matiere M, GERER G, SEANCE S, PRESENCE P, ETUDIANT E,INSCRIPTION I WHERE M.nom_matiere=%s AND F.NOM=%s AND F.id_filiere=G.ID_FI \
-            AND G.id_ma=M.id_matiere AND S.id_seance=G.id_se AND F.id_filiere=I.ID_FIL AND P.id_etu=E.ID_ETUDIANT AND S.DATE_SEANCE=%s"
+        query = "SELECT E.Id_etudiant, E.NOM, E.PRENOM, P.status FROM FILIERE F, Matiere M, GERER G, SEANCE S,\
+         PRESENCE P, ETUDIANT E,INSCRIPTION I WHERE M.nom_matiere=%s AND F.NOM=%s AND F.id_filiere=G.ID_FI \
+            AND G.id_ma=M.id_matiere AND S.id_seance=G.id_se AND F.id_filiere=I.ID_FIL AND P.id_etu=E.ID_ETUDIANT AND S.DATE_SEANCE=%s and  S.ID_SEANCE=P.ID_SE"
+        print(seance)
         self.cursor.execute(query, (matiere, filiere,seance))
         result = self.cursor.fetchall()
 

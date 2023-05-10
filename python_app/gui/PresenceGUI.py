@@ -5,7 +5,7 @@ from CTkMessagebox import CTkMessagebox
 from PyQt5 import Qt
 import tkinter.ttk as ttk
 from model_ecole.modelEcole import Etudiant, MySQLDatabase
-
+import pandas as pd
 
 class PresenceGUI:
 
@@ -39,7 +39,7 @@ class PresenceGUI:
         self.bt_upload = customtkinter.CTkButton(right_dashboard, text="Go", command=self.GoResult)
         self.bt_upload.place(x=710, y=100)
 
-        self.bt_upload = customtkinter.CTkButton(right_dashboard, text="Générer un fichier", command=self.getFiliere)
+        self.bt_upload = customtkinter.CTkButton(right_dashboard, text="Générer un fichier", command=self.export_data_to_csv)
         self.bt_upload.place(x=870, y=100)
 
 
@@ -146,4 +146,17 @@ class PresenceGUI:
         self.table.bind('<Motion>', 'break')
 
         print(result)
+
+
+
+    def export_data_to_csv(self):
+        db = MySQLDatabase('localhost', 'root', '', 'si_presence')
+        result=db.get_presence_data(str(self.combobox2.get()),str(self.combobox1.get()),str(self.combobox3.get()))
+        # Convert result set to a pandas DataFrame
+        df = pd.DataFrame(result)
+
+        # Export data to CSV file
+        df.to_csv('presence', index=False)
+
+
 
