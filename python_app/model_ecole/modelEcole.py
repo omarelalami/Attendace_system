@@ -160,7 +160,7 @@ class MySQLDatabase:
         query = "SELECT E.Id_etudiant, E.NOM, E.PRENOM, P.status FROM FILIERE F, Matiere M, GERER G, SEANCE S,\
          PRESENCE P, ETUDIANT E,INSCRIPTION I WHERE M.nom_matiere=%s AND F.NOM=%s AND F.id_filiere=G.ID_FI \
             AND G.id_ma=M.id_matiere AND S.id_seance=G.id_se AND F.id_filiere=I.ID_FIL AND P.id_etu=E.ID_ETUDIANT AND S.DATE_SEANCE=%s and  S.ID_SEANCE=P.ID_SE"
-        print(seance)
+
         self.cursor.execute(query, (matiere, filiere,seance))
         result = self.cursor.fetchall()
 
@@ -174,7 +174,59 @@ class MySQLDatabase:
 
         return presence_data
 
+    def set_presence_data(self,date_presence,heure_presence,id_etu):
+        status='PR'
+        query1="SELECT S.ID_SEANCE FROM ETUDIANT E,INSCRIPTION I,FILIERE F,GERER G,SEANCE S WHERE E.ID_ETUDIANT=%s \
+              AND I.ID_FIL =F.ID_FILIERE AND F.ID_FILIERE=G.ID_FI AND S.ID_SEANCE =G.ID_SE \
+              AND DATEDIFF(STR_TO_DATE(DATE_SEANCE, '%Y-%m-%d'), CURDATE())=0 AND TIMESTAMPDIFF(MINUTE, STR_TO_DATE(HEURE_DEBUT, '%H:%i'), NOW()) <=60 "
+        self.cursor.execute(query1, (id_etu,))
+        result = self.cursor.fetchall()
 
+
+
+
+
+        query = "INSERT INTO PRESENCE (status,date_presence,heure_presence,id_etu,id_se) VALUES (%s, %s, %s,%s,%s)"
+        self.cursor.execute(query, (status,date_presence,heure_presence,id_etu,result[0][0]))
+
+        self.connection.commit()
+
+
+
+    # def get_etudiant_bytime(self):
+    #
+    #     query = "SELECT E.ID_ETUDIANT FROM ETUDIANT E,INSCRIPTION I,FILIERE F,GERER G,SEANCE S WHERE E.ID_ETUDIANT=I.ID_ETU \
+    #     AND I.ID_FIL =F.ID_FILIERE AND F.ID_FILIERE=G.ID_FI AND S.ID_SEANCE =G.ID_SE AND DATEDIFF(STR_TO_DATE(DATE_SEANCE, '%Y-%m-%d'), CURDATE())=0\
+    #      AND TIMESTAMPDIFF(MINUTE, STR_TO_DATE(HEURE_DEBUT, '%H:%i'), NOW()) <=60"
+    #     self.cursor.execute(query)
+    #     result = self.cursor.fetchall()
+    #     etudiants = []
+    #     for row in result:
+    #
+    #         etudiants.append(row [0])
+    #     return etudiants
+
+    def get_etudiant_byday(self):
+        query = "SELECT E.ID_ETUDIANT FROM ETUDIANT E,INSCRIPTION I,FILIERE F,GERER G,SEANCE S WHERE E.ID_ETUDIANT=I.ID_ETU \
+              AND I.ID_FIL =F.ID_FILIERE AND F.ID_FILIERE=G.ID_FI AND S.ID_SEANCE =G.ID_SE AND DATEDIFF(STR_TO_DATE(DATE_SEANCE, '%Y-%m-%d'), CURDATE())=0"
+        self.cursor.execute(query)
+        result = self.cursor.fetchall()
+        etudiants = []
+        for row in result:
+            etudiants.append(row [0])
+        return etudiants
+
+    def if_etudiant(self, id_etudiant):
+        query1 = "SELECT P.ID_ETU FROM SEANCE S, PRESENCE P WHERE DATEDIFF(STR_TO_DATE(DATE_SEANCE, '%Y-%m-%d'), CURDATE()) = 0 \
+                  AND TIMESTAMPDIFF(MINUTE, STR_TO_DATE(HEURE_FIN, '%H:%i'), NOW()) >= 10 AND P.ID_SE = S.ID_SEANCE AND P.ID_ETU = %s"
+
+        self.cursor.execute(query1, (id_etudiant,))
+        result = self.cursor.fetchall()
+
+        if result:
+            return False
+        else:
+            return True
 
     def close_connection(self):
         self.connection.close()

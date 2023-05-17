@@ -1,5 +1,5 @@
 import csv
-
+from tkinter import filedialog
 import customtkinter as customtkinter
 from CTkMessagebox import CTkMessagebox
 from PyQt5 import Qt
@@ -30,17 +30,17 @@ class PresenceGUI:
         self.idLabel = customtkinter.CTkLabel(right_dashboard, text="ID Filiere")
         self.idLabel.place(x=475, y=100)
 
-        self.combobox3 = customtkinter.CTkComboBox(master=right_dashboard,state='disabled')
+        self.combobox3 = customtkinter.CTkComboBox(master=right_dashboard,state='disabled',command=self.ForBtn)
         self.combobox3.place(x=550, y=100)
 
 
 
 
-        self.bt_upload = customtkinter.CTkButton(right_dashboard, text="Go", command=self.GoResult)
-        self.bt_upload.place(x=710, y=100)
+        self.go_btn= customtkinter.CTkButton(right_dashboard, text="Go", command=self.GoResult,state='disabled')
+        self.go_btn.place(x=710, y=100)
 
-        self.bt_upload = customtkinter.CTkButton(right_dashboard, text="Générer un fichier", command=self.export_data_to_csv)
-        self.bt_upload.place(x=870, y=100)
+        self.download_btn = customtkinter.CTkButton(right_dashboard, text="Générer un fichier", command=self.export_data_to_csv,state='disabled')
+        self.download_btn.place(x=870, y=100)
 
 
 
@@ -73,23 +73,27 @@ class PresenceGUI:
 
         # create a frame to hold the table and the scrollbar
         table_frame = ttk.Frame(master=right_dashboard)
-        table_frame.grid(row=0, column=0, sticky='nsew', padx=10, pady=190)
+        table_frame.grid(row=0, column=0, sticky='nsew', padx=15, pady=190)
 
         # create the table
         self.table = ttk.Treeview(master=table_frame, columns=columns, height=30, selectmode='browse', show='headings')
         self.table.column("#1", anchor="c", minwidth=50, width=170)
-        self.table.column("#2", anchor="c", minwidth=220, width=170)
+        self.table.column("#2", anchor="c", minwidth=120, width=170)
         self.table.column("#3", anchor="c", minwidth=120, width=170)
         self.table.column("#4", anchor="c", minwidth=120, width=170)
         self.table.column("#5", anchor="c", minwidth=120, width=170)
-        self.table.column("#6", anchor="c", minwidth=120, width=170)
+        self.table.column("#6", anchor="e", minwidth=120, width=170)
+
+
 
         self.table.heading('id', text='id')
         self.table.heading('Nom', text='Nom')
         self.table.heading('Prenom', text='Prenom')
         self.table.heading('Filière', text='Filière')
         self.table.heading('Matière', text='Matière')
-        self.table.heading('Statut', text='Statut')
+        self.table.heading('Statut', text='Statut',anchor='w')
+
+
 
         self.table.grid(row=0, column=0, sticky='nsew')
 
@@ -124,6 +128,9 @@ class PresenceGUI:
 
 
         self.combobox3.configure(values=lis)
+    def ForBtn(self,event):
+        self.go_btn.configure(state='normal')
+        self.download_btn.configure(state='normal')
 
 
 
@@ -147,27 +154,28 @@ class PresenceGUI:
 
         print(result)
 
-
-
     def export_data_to_csv(self):
         db = MySQLDatabase('localhost', 'root', '', 'si_presence')
-        result=db.get_presence_data(str(self.combobox2.get()),str(self.combobox1.get()),str(self.combobox3.get()))
-        result1=[]
+        result = db.get_presence_data(str(self.combobox2.get()), str(self.combobox1.get()), str(self.combobox3.get()))
+        result1 = []
         for i in result:
-
-            id = i[0]
-            nom = i[1]
-            prenom = i[2]
-            filiere=self.combobox1.get()
-            matiere=self.combobox2.get()
-            statut=i[3]
+            id = i [0]
+            nom = i [1]
+            prenom = i [2]
+            filiere = self.combobox1.get()
+            matiere = self.combobox2.get()
+            statut = i [3]
             result1.append((id, nom, prenom, filiere, matiere, statut))
-        print(result1)
+
         # Convert result set to a pandas DataFrame
         df = pd.DataFrame(result1)
 
-        # Export data to CSV file
-        df.to_excel('presence.xlsx', index=False, header=['id_etudiant', 'nom', 'prenom', 'filiere', 'matiere', 'statut'])
+        # Open a file dialog window to choose file path and name
+        file_path = filedialog.asksaveasfilename(defaultextension='.xlsx',
+                                                 filetypes=[('Excel files', '*.xlsx')])
+
+        # Export data to chosen file path and name
+        df.to_excel(file_path, index=False, header=['id_etudiant', 'nom', 'prenom', 'filiere', 'matiere', 'statut'])
 
 
 
