@@ -29,7 +29,7 @@ class AttendanceSystem:
             self.encoded_face_train.append(encoded_face)
 
     def mark_attendance(self, name):
-        if self.db.if_etudiant(name):
+
             now = datetime.now()
             time = now.strftime('%I:%M:%S:%p')
             date = now.strftime('%d-%B-%Y')
@@ -74,18 +74,20 @@ class AttendanceSystem:
                 matchIndex = np.argmin(faceDist)
                 if faceDist [matchIndex] <0.5:
                     name = self.classNames[matchIndex].upper().lower()
-                    y1, x2, y2, x1 = faceloc
-                    # since we scaled down by 4 times
-                    y1, x2, y2, x1 = y1 * 4, x2 * 4, y2 * 4, x1 * 4
-                    cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                    cv2.rectangle(img, (x1, y2 - 35), (x2, y2), (0, 255, 0), cv2.FILLED)
-                    cv2.putText(img, name, (x1 + 6, y2 - 5), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 255, 255), 2)
-                    self.mark_attendance(name)
+                    if  self.db.if_etudiant(name):
+                        print(self.db.if_etudiant(name))
+                        y1, x2, y2, x1 = faceloc
+                        # since we scaled down by 4 times
+                        y1, x2, y2, x1 = y1 * 4, x2 * 4, y2 * 4, x1 * 4
+                        cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                        cv2.rectangle(img, (x1, y2 - 35), (x2, y2), (0, 255, 0), cv2.FILLED)
+                        cv2.putText(img, name, (x1 + 6, y2 - 5), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 255, 255), 2)
+                        self.mark_attendance(name)
 
-                    if not sound_playing:
-                        sound_playing = True
-                        self.play_sound(wait=True)
-                        sound_playing = False
+                        if not sound_playing:
+                            sound_playing = True
+                            self.play_sound(wait=True)
+                            sound_playing = False
 
 
             cv2.imshow('webcam', img)
@@ -96,13 +98,5 @@ class AttendanceSystem:
         cv2.destroyAllWindows()
         return True
 
-    def list_image_names(self,directory):
-        image_names = []
 
-        for root, _, files in os.walk(directory):
-            for file in files:
-                if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
-                    image_names.append(file)
-
-        return image_names
 
