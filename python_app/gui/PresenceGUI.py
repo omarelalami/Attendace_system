@@ -163,6 +163,10 @@ class PresenceGUI:
 
     def export_data_to_csv(self):
         db = MySQLDatabase('localhost', 'root', '', 'si_presence')
+        res=str(self.combobox3.get()).split("|")
+        resu=res[1].split("-")
+        heure_debut = resu[0].replace(" ", "")
+        heure_fin=resu[1].replace(" ","")
         result = db.get_presence_data(str(self.combobox2.get()),str(self.combobox1.get()),res[0],heure_debut,heure_fin)
         result1 = []
         for i in result:
