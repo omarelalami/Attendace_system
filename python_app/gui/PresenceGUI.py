@@ -12,35 +12,35 @@ class PresenceGUI:
     def __init__(self,right_dashboard):
 
 
-        self.idLabel = customtkinter.CTkLabel(right_dashboard, text="ID Filiere")
-        self.idLabel.place(x=25, y=100)
+        self.idLabel = customtkinter.CTkLabel(right_dashboard, text="Nom Filère")
+        self.idLabel.place(x=22, y=100)
         lis=self.getFiliere()
         self.combobox1 = customtkinter.CTkComboBox(master=right_dashboard,
                                              values=lis,command=self.ForMatiere)
         self.combobox1.place(x=90,y=100)
 
-        self.idLabel = customtkinter.CTkLabel(right_dashboard, text="ID Filiere")
-        self.idLabel.place(x=250, y=100)
+        self.idLabel1 = customtkinter.CTkLabel(right_dashboard, text="Nom Matière")
+        self.idLabel1.place(x=238, y=100)
 
 
         self.combobox2 = customtkinter.CTkComboBox(master=right_dashboard,
                                               values=["option 1", "option 2"],state='disabled',command=self.ForSeance)
-        self.combobox2.place(x=315, y=100)
+        self.combobox2.place(x=320, y=100)
 
-        self.idLabel = customtkinter.CTkLabel(right_dashboard, text="ID Filiere")
-        self.idLabel.place(x=475, y=100)
+        self.idLabel2 = customtkinter.CTkLabel(right_dashboard, text="Date Séance")
+        self.idLabel2.place(x=468, y=100)
 
         self.combobox3 = customtkinter.CTkComboBox(master=right_dashboard,state='disabled',command=self.ForBtn)
-        self.combobox3.place(x=550, y=100)
+        self.combobox3.place(x=548, y=100)
 
 
 
 
         self.go_btn= customtkinter.CTkButton(right_dashboard, text="Go", command=self.GoResult,state='disabled')
-        self.go_btn.place(x=710, y=100)
+        self.go_btn.place(x=700, y=100)
 
         self.download_btn = customtkinter.CTkButton(right_dashboard, text="Générer un fichier", command=self.export_data_to_csv,state='disabled')
-        self.download_btn.place(x=870, y=100)
+        self.download_btn.place(x=845, y=100)
 
 
 
@@ -163,7 +163,7 @@ class PresenceGUI:
 
     def export_data_to_csv(self):
         db = MySQLDatabase('localhost', 'root', '', 'si_presence')
-        result = db.get_presence_data(str(self.combobox2.get()), str(self.combobox1.get()), str(self.combobox3.get()))
+        result = db.get_presence_data(str(self.combobox2.get()),str(self.combobox1.get()),res[0],heure_debut,heure_fin)
         result1 = []
         for i in result:
             id = i [0]

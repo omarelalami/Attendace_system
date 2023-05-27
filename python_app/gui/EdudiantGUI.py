@@ -3,6 +3,9 @@ import csv
 import customtkinter as ctk
 from CTkMessagebox import CTkMessagebox
 from PyQt5 import Qt
+import shutil
+import os
+import tkinter
 
 from model_ecole.modelEcole import Etudiant, MySQLDatabase
 
@@ -50,6 +53,9 @@ class EtudiantGui:
 
         self.bt_upload.grid (row=6, column=3, padx=20, pady=10)
 
+        self.bt_upload_st = ctk.CTkButton (right_dashboard, text="Imporet une image", command=self.upload_mat_student)
+
+        self.bt_upload_st.grid (row=0, column=4, padx=20, pady=10)
 
     def getDataEtudiant(self):
 
@@ -122,4 +128,33 @@ class EtudiantGui:
         finally:
             if db is not None:
                 db.close_connection ()
+
+    def upload_mat_student(self):
+        try:
+            # Open file dialog to choose a file
+            file_path = tkinter.filedialog.askopenfilename()
+
+            # Check if the file has a valid JPEG extension
+            file_extension = os.path.splitext(file_path) [1]
+            if file_extension.lower() != ".jpg" or not self.idEntry.get():
+                CTkMessagebox(title='Oops', message='Vous avez un problème sur le type ou vous n^avez pas remplir ID de l^etudiant' , icon='warning',option_1='OK')
+                return
+
+            # Rename the file with the student's name
+            new_file_name = f"{self.idEntry.get()}.jpg"
+            new_file_path = os.path.join(os.getcwd(), new_file_name)
+
+            # Create the student's folder if it doesn't exist
+
+
+            # Copy the file to the student's folder
+            shutil.copy(file_path, os.path.join('student_images', new_file_name))
+
+            CTkMessagebox(title='OK', message='Votre image entregistrer avec succès', icon='check',option_1='OK')
+        except Exception as e:
+            CTkMessagebox(title='Error', message='Il y a un problème: '+str(e), icon='cancel',option_1='OK')
+
+
+
+
 

@@ -3,6 +3,7 @@ from datetime import datetime
 
 import customtkinter
 import cv2
+
 import face_recognition
 import numpy as np
 from CTkMessagebox import CTkMessagebox
